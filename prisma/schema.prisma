@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  resident
+  collector
+  admin
+}
+
+model User {
+  id               Int             @id @default(autoincrement())
+  name             String
+  email            String          @unique
+  phone            String?
+  address          String?
+  role             UserRole
+  password         String
+  resetCode        String?
+  resetCodeExpires DateTime?
+  createdAt        DateTime        @default(now())
+  pickupRequests   PickupRequest[] @relation("UserPickupRequests")
+  assignedPickups  PickupRequest[] @relation("CollectorPickups")
+  sessions         Session[]
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model ItemCategory {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  hazardLevel Int          @default(0)
+  description String?
+  items       PickupItem[]
+}
+
+model DropoffLocation {
+  id      Int    @id @default(autoincrement())
+  name    String
+  address String
+  lat     Float?
+  lon     Float?
+}
+
+enum PickupStatus {
+  pending
+  assigned
+  in_progress
+  completed
+  cancelled
+}
+
+enum UrgencyLevel {
+  low
+  standard
+  medium
+  high
+}
+
+model PickupRequest {
+  id                  Int          @id @default(autoincrement())
+  residentId          Int
+  resident            User         @relation("UserPickupRequests", fields: [residentId], references: [id])
+  address             String
+  preferredTime       String?
+  urgency             UrgencyLevel @default(standard)
+  status              PickupStatus @default(pending)
+  assignedCollectorId Int?
+  collector           User?        @relation("CollectorPickups", fields: [assignedCollectorId], references: [id])
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  items               PickupItem[]
+}
+
+model PickupItem {
+  id         Int           @id @default(autoincrement())
+  pickupId   Int
+  pickup     PickupRequest @relation(fields: [pickupId], references: [id])
+  categoryId Int
+  category   ItemCategory  @relation(fields: [categoryId], references: [id])
+  quantity   Int           @default(1)
+}
