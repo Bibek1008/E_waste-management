@@ -972,77 +972,77 @@ export default function Home() {
           {me?.role === "admin" && (
             <>
               {/* Admin Overview Stats */}
-              <section className="lg:col-span-3 bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-purple-100 p-8 mb-8">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <section className="col-span-full bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-purple-100 p-10 mb-10">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2-2V7a2 2 0 012-2h2a2 2 0 002 2v2a2 2 0 002 2h2a2 2 0 012-2V7a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 00-2 2h-2a2 2 0 00-2 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2z" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900">System Overview</h3>
-                    <p className="text-gray-600">Monitor all e-waste management activities</p>
+                    <h3 className="text-3xl font-bold text-gray-900">System Overview</h3>
+                    <p className="text-gray-600 text-lg">Monitor all e-waste management activities</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                  <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-6 text-white shadow-xl">
-                    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+                  <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-8 text-white shadow-xl transform hover:scale-105 transition-transform">
+                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
                     </div>
-                    <div className="text-3xl font-bold mb-1">{users.length}</div>
-                    <div className="text-purple-100">Total Users</div>
+                    <div className="text-4xl font-bold mb-2">{users.length}</div>
+                    <div className="text-purple-100 font-medium text-lg">Total Users</div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-3xl p-6 text-white shadow-xl">
-                    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-3xl p-8 text-white shadow-xl transform hover:scale-105 transition-transform">
+                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                     </div>
-                    <div className="text-3xl font-bold mb-1">{allUsers.filter(u => u.role === 'resident').length}</div>
-                    <div className="text-emerald-100">Residents</div>
+                    <div className="text-4xl font-bold mb-2">{users.filter(u => u.role === 'resident').length}</div>
+                    <div className="text-emerald-100 font-medium text-lg">Residents</div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl p-6 text-white shadow-xl">
-                    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl p-8 text-white shadow-xl transform hover:scale-105 transition-transform">
+                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                       </svg>
                     </div>
-                    <div className="text-3xl font-bold mb-1">{allUsers.filter(u => u.role === 'collector').length}</div>
-                    <div className="text-blue-100">Collectors</div>
+                    <div className="text-4xl font-bold mb-2">{users.filter(u => u.role === 'collector').length}</div>
+                    <div className="text-blue-100 font-medium text-lg">Collectors</div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-yellow-500 to-orange-500 rounded-3xl p-6 text-white shadow-xl">
-                    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-gradient-to-br from-yellow-500 to-orange-500 rounded-3xl p-8 text-white shadow-xl transform hover:scale-105 transition-transform">
+                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                       </svg>
                     </div>
-                    <div className="text-3xl font-bold mb-1">{pickups.length}</div>
-                    <div className="text-yellow-100">Total Pickups</div>
+                    <div className="text-4xl font-bold mb-2">{pickups.length}</div>
+                    <div className="text-yellow-100 font-medium text-lg">Total Pickups</div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-3xl p-6 text-white shadow-xl">
-                    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-3xl p-8 text-white shadow-xl transform hover:scale-105 transition-transform">
+                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <div className="text-3xl font-bold mb-1">{pickups.filter(p => p.status === 'completed').length}</div>
-                    <div className="text-green-100">Completed</div>
+                    <div className="text-4xl font-bold mb-2">{pickups.filter(p => p.status === 'completed').length}</div>
+                    <div className="text-green-100 font-medium text-lg">Completed</div>
                   </div>
                 </div>
               </section>
 
               {/* All Pickup Requests Management */}
-              <section className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-purple-100 p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <section className="lg:col-span-8 bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-purple-100 p-10">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                    <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                     </svg>
                   </div>
@@ -1052,7 +1052,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="space-y-4 max-h-96 overflow-y-auto">
+                <div className="space-y-6 max-h-[500px] overflow-y-auto">
                   {pickups.length === 0 ? (
                     <div className="text-center py-12">
                       <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -1138,21 +1138,21 @@ export default function Home() {
               </section>
 
               {/* User Management */}
-              <section className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-purple-100 p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <section className="lg:col-span-4 bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-purple-100 p-10">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
+                    <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">User Management</h3>
-                    <p className="text-sm text-gray-600">System users and roles</p>
+                    <h3 className="text-2xl font-bold text-gray-900">User Management</h3>
+                    <p className="text-gray-600 text-lg">System users and roles</p>
                   </div>
                 </div>
 
-                <div className="space-y-4 max-h-80 overflow-y-auto">
-                  {allUsers.length === 0 ? (
+                <div className="space-y-6 max-h-[500px] overflow-y-auto">
+                  {users.length === 0 ? (
                     <div className="text-center py-8">
                       <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1163,8 +1163,8 @@ export default function Home() {
                       <p className="text-gray-500 text-sm">System users will appear here</p>
                     </div>
                   ) : (
-                    allUsers.map(user => (
-                      <div key={user.id} className="bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-all">
+                    users.map(user => (
+                      <div key={user.id} className="bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-2xl p-8 hover:shadow-md transition-all">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold ${
