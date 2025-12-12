@@ -5,7 +5,7 @@ export default function Home() {
   type Item = { id: number; name: string; hazard_level: string; description?: string | null };
   type Location = { id: number; name: string; address: string };
   type PickupItem = { category_id: number; quantity: number };
-  type Pickup = { id: number; status: string; resident_id: number; assigned_collector_id: number | null; items: PickupItem[] };
+  type Pickup = { id: number; status: string; resident_id: number; assigned_collector_id: number | null; address: string; preferred_time: string | null; urgency?: string; items: PickupItem[] };
   type Analytics = { total_pickups: number; completed_pickups: number; pending_pickups: number; total_items: number };
   type Me = { id: number; email: string; role: string };
 

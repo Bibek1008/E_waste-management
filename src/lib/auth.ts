@@ -30,5 +30,5 @@ export async function signToken(payload: Record<string, unknown>, expiresIn = "7
 
 export async function verifyToken(token: string): Promise<AuthPayload> {
   const { payload } = await jwtVerify(token, secret, { algorithms: ["HS256"] });
-  return payload as JWTPayload as AuthPayload;
+  return payload as unknown as AuthPayload;
 }

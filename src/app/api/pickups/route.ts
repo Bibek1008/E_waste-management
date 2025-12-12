@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
 
 type ReqEntity = {
   id: number;
@@ -32,7 +31,7 @@ export async function GET(req: NextRequest) {
   const userId = searchParams.get("user_id");
   const offsetParam = searchParams.get("offset");
   const offset = offsetParam ? Number(offsetParam) : 0;
-  const where: Prisma.PickupRequestWhereInput = {};
+  const where: any = {};
   if (role === "resident" && userId) where.residentId = Number(userId);
   if (role === "collector" && userId) where.assignedCollectorId = Number(userId);
   const reqs = await prisma.pickupRequest.findMany({
