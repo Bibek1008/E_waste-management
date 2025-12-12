@@ -3,10 +3,8 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const users = await prisma.user.findMany();
-  return Response.json(
-    users.map(u => ({ id: u.id, name: u.name, email: u.email, phone: u.phone ?? null, address: u.address ?? null, role: u.role })),
-    { headers: { "Cache-Control": "private, max-age=15" } }
-  );
+  const payload = users.map(u => ({ id: u.id, name: u.name, email: u.email, phone: u.phone ?? null, address: u.address ?? null, role: u.role }));
+  return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json", "Cache-Control": "private, max-age=15" } });
 }
 
 export async function POST(req: NextRequest) {

@@ -3,10 +3,8 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const items = await prisma.itemCategory.findMany();
-    return Response.json(
-      items.map(i => ({ id: i.id, name: i.name, hazard_level: i.hazardLevel, description: i.description ?? null })),
-      { headers: { "Cache-Control": "private, max-age=15" } }
-    );
+    const payload = items.map(i => ({ id: i.id, name: i.name, hazard_level: i.hazardLevel, description: i.description ?? null }));
+    return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json", "Cache-Control": "private, max-age=15" } });
 }
 
 export async function POST(req: NextRequest) {

@@ -10,8 +10,6 @@ export async function GET() {
     }
   });
   const totalItems = itemsAggregate._sum.quantity || 0;
-  return Response.json(
-    { total_pickups: total, completed_pickups: completed, pending_pickups: pending, total_items: totalItems },
-    { headers: { "Cache-Control": "private, max-age=10" } }
-  );
+  const payload = { total_pickups: total, completed_pickups: completed, pending_pickups: pending, total_items: totalItems };
+  return new Response(JSON.stringify(payload), { headers: { "Content-Type": "application/json", "Cache-Control": "private, max-age=10" } });
 }

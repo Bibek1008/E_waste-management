@@ -42,10 +42,11 @@ export async function GET(req: NextRequest) {
     take: 20,
     include: { items: { select: { id: true, categoryId: true, quantity: true } } }
   });
-  return Response.json(
-    reqs.map(r => serialize(r as unknown as ReqEntity)),
-    { headers: { "Cache-Control": "private, max-age=10" } }
-  );
+  const payload = reqs.map(r => serialize(r as unknown as ReqEntity));
+  return new Response(JSON.stringify(payload), {
+    headers: { "Content-Type": "application/json", "Cache-Control": "private, max-age=10" },
+    status: 200,
+  });
 }
 
 export async function POST(req: NextRequest) {
