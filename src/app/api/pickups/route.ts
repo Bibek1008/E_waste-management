@@ -33,7 +33,12 @@ export async function GET(req: NextRequest) {
   const where: Prisma.PickupRequestWhereInput = {};
   if (role === "resident" && userId) where.residentId = Number(userId);
   if (role === "collector" && userId) where.assignedCollectorId = Number(userId);
-  const reqs = await prisma.pickupRequest.findMany({ where, orderBy: { createdAt: "desc" }, include: { items: true } });
+  const reqs = await prisma.pickupRequest.findMany({
+    where,
+    orderBy: { createdAt: "desc" },
+    take: 50,
+    include: { items: { select: { id: true, categoryId: true, quantity: true } } }
+  });
   return Response.json(reqs.map(r => serialize(r as unknown as ReqEntity)));
 }
 
