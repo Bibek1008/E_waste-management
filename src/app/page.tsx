@@ -704,9 +704,14 @@ export default function Home() {
                                   })
                                 });
                                 showNotice(`Pickup #${p.id} assigned to you successfully!`);
-                                await refreshPickupsForRole();
-                                // Refresh analytics after assignment
-                                try { setAnalytics(await fetchJSON<Analytics>("/api/analytics/summary")); } catch {}
+                                // Refresh pickups and analytics concurrently to reduce wait time
+                                try {
+                                  const [_, latest] = await Promise.all([
+                                    refreshPickupsForRole(),
+                                    fetchJSON<Analytics>("/api/analytics/summary"),
+                                  ]);
+                                  setAnalytics(latest);
+                                } catch {}
                               } catch(e) {
                                 showNotice(e instanceof Error ? e.message : "Error assigning pickup");
                               }
