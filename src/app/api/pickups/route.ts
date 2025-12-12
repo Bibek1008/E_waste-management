@@ -42,10 +42,14 @@ export async function GET(req: NextRequest) {
   return Response.json(reqs.map(r => serialize(r as unknown as ReqEntity)));
 }
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const body = await req.json();
   const resident = await prisma.user.findUnique({ where: { id: Number(body.resident_id) } });
   if (!resident) return Response.json({ detail: "resident not found" }, { status: 404 });
+  const offsetParam = searchParams.get("offset");
+  const offset = offsetParam ? Number(offsetParam) : 0;
   const created = await prisma.pickupRequest.create({ data: { residentId: Number(body.resident_id), address: body.address, preferredTime: body.preferred_time ?? null, urgency: body.urgency ?? 'standard', items: { create: (body.items || []).map((it: { category_id: number; quantity?: number }) => ({ categoryId: Number(it.category_id), quantity: Number(it.quantity ?? 1) })) } }, include: { items: true } });
   return Response.json(serialize(created as unknown as ReqEntity));
 }
+  const reqs = await prisma.pickupRequest.findMany({ where, orderBy: { createdAt: "desc" }, skip: offset, take: 20, include: { items: { select: { id: true, categoryId: true, quantity: true } } } });
+  return Response.json(reqs.map(r => serialize(r as unknown as ReqEntity)), { headers: { "Cache-Control": "private, max-age=10" } });
