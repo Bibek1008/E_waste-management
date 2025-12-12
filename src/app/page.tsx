@@ -830,7 +830,7 @@ export default function Home() {
               </section>
 
               {/* Collector Stats */}
-              <section className="lg:col-span-3 bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-emerald-100 p-8">
+              <section className="lg:col-span-8 bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-emerald-100 p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -843,7 +843,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-4 text-white shadow-xl">
                     <div className="flex items-center justify-center mb-3">
                       <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
