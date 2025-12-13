@@ -5,11 +5,28 @@ export default function Home() {
   type Item = { id: number; name: string; hazard_level: string; description?: string | null };
   type Location = { id: number; name: string; address: string };
   type PickupItem = { category_id: number; quantity: number };
-  type Pickup = { id: number; status: string; resident_id: number; assigned_collector_id: number | null; address: string; preferred_time: string | null; urgency?: string; items: PickupItem[] };
+  type Pickup = { id: number; status: string; resident_id: number; resident_name: string; assigned_collector_id: number | null; assigned_collector_name: string | null; address: string; preferred_time: string | null; urgency?: string; items: PickupItem[] };
   type Analytics = { total_pickups: number; completed_pickups: number; pending_pickups: number; total_items: number };
   type Me = { id: number; email: string; role: string };
+  type AdminItem = { 
+    id: number; 
+    category_id: number; 
+    category_name: string;
+    hazard_level: string;
+    quantity: number; 
+    pickup_request: { 
+      id: number; 
+      address: string; 
+      status: string; 
+      created_at: string; 
+      resident_name: string; 
+      assigned_collector_name: string | null; 
+    }; 
+  };
 
   const [items, setItems] = useState<Item[]>([]);
+  const [adminItems, setAdminItems] = useState<AdminItem[]>([]);
+  const [showItemsModal, setShowItemsModal] = useState(false);
   const [locs, setLocs] = useState<Location[]>([]);
   const [users, setUsers] = useState<{ id: number; name: string; email: string; role: string }[]>([]);
   const [pickup, setPickup] = useState({ resident_id: "", address: "", preferred_time: "", urgency: "standard", items: "[]" });
@@ -180,6 +197,16 @@ export default function Home() {
     const id = setTimeout(() => { void refreshPickupsForRole(); }, 0);
     return () => clearTimeout(id);
   }, [refreshPickupsForRole]);
+
+  useEffect(() => {
+    if (me && me.role === "admin") {
+      (async () => {
+        try { 
+          setAdminItems(await fetchJSON<AdminItem[]>("/api/admin/items")); 
+        } catch {}
+      })();
+    }
+  }, [me]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
@@ -645,7 +672,7 @@ export default function Home() {
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                   </svg>
-                                  Resident #{p.resident_id}
+                                  {p.resident_name}
                                 </span>
                                 <span className="flex items-center gap-1">
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -807,7 +834,7 @@ export default function Home() {
                             <div>
                               <div className="font-semibold text-gray-900">Pickup #{p.id}</div>
                               <div className="text-sm text-gray-600">
-                                Resident #{p.resident_id} • {p.items.length} items
+                                {p.resident_name} • {p.items.length} items
                               </div>
                             </div>
                           </div>
@@ -1088,14 +1115,14 @@ export default function Home() {
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                   </svg>
-                                  Resident #{p.resident_id}
+                                  {p.resident_name}
                                 </span>
                                 {p.assigned_collector_id && (
                                   <span className="flex items-center gap-1">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                                     </svg>
-                                    Collector #{p.assigned_collector_id}
+                                    {p.assigned_collector_name}
                                   </span>
                                 )}
                                 <span className="flex items-center gap-1">
@@ -1197,6 +1224,87 @@ export default function Home() {
                   )}
                 </div>
               </section>
+              {/* Admin Items List */}
+              <section className="col-span-full bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-purple-100 p-10 mt-8">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center">
+                    <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">All Items Registry</h2>
+                    <p className="text-sm text-gray-600">Complete list of all e-waste items across all pickup requests</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[600px] overflow-y-auto">
+                  {adminItems.length === 0 ? (
+                    <div className="col-span-full text-center py-12">
+                      <div className="w-20 h-20 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-700 mb-2">No items found</h3>
+                      <p className="text-gray-500">E-waste items will appear here as pickup requests are created</p>
+                    </div>
+                  ) : (
+                    adminItems.map(item => (
+                      <div key={item.id} className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-2xl p-6 hover:shadow-lg transition-all">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                              #{item.id}
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-gray-900">Item #{item.id}</h4>
+                              <div className="text-sm text-gray-600">Category: {getCategoryDisplay(item.category_id)}</div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-orange-600">×{item.quantity}</div>
+                            <div className="text-xs text-gray-500">Quantity</div>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-white/70 rounded-xl p-4 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-gray-700">Pickup Request:</span>
+                            <span className="text-gray-900 font-semibold">#{item.pickup_request.id}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-gray-700">Resident:</span>
+                            <span className="text-gray-900">{item.pickup_request.resident_name}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-gray-700">Status:</span>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              item.pickup_request.status === 'completed' ? 'bg-green-100 text-green-700' :
+                              item.pickup_request.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                              item.pickup_request.status === 'assigned' ? 'bg-yellow-100 text-yellow-700' :
+                              'bg-gray-100 text-gray-700'
+                            }`}>
+                              {item.pickup_request.status.replace('_', ' ').toUpperCase()}
+                            </span>
+                          </div>
+                          {item.pickup_request.assigned_collector_name && (
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium text-gray-700">Collector:</span>
+                              <span className="text-gray-900">{item.pickup_request.assigned_collector_name}</span>
+                            </div>
+                          )}
+                          <div className="pt-2 border-t">
+                            <div className="text-xs text-gray-500">
+                              {new Date(item.pickup_request.created_at).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </section>
             </>
           )}
         </div>
@@ -1263,13 +1371,17 @@ export default function Home() {
                 <div className="text-yellow-100">Pending</div>
               </div>
 
-              <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-6 text-white shadow-xl">
+              <div 
+                className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-6 text-white shadow-xl cursor-pointer hover:shadow-2xl transform hover:scale-105 transition-all" 
+                onClick={() => setShowItemsModal(true)}
+              >
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                   </div>
+                  <div className="text-xs bg-white/20 px-2 py-1 rounded-full">Click to view</div>
                 </div>
                 <div className="text-3xl font-bold mb-1">{analytics?.total_items ?? 0}</div>
                 <div className="text-purple-100">Total Items</div>
@@ -1319,6 +1431,126 @@ export default function Home() {
             )}
           </section>
       </main>
+
+      {/* Detailed Items Modal */}
+      {showItemsModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-7xl w-full max-h-[90vh] overflow-hidden">
+            <div className="flex items-center justify-between p-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold">Complete Items Registry</h2>
+                  <p className="text-purple-100">All e-waste items with collection details</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowItemsModal(false)}
+                className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {adminItems.length === 0 ? (
+                  <div className="col-span-full text-center py-12">
+                    <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-10 h-10 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">No items found</h3>
+                    <p className="text-gray-500">E-waste items will appear here as requests are created</p>
+                  </div>
+                ) : (
+                  adminItems.map(item => (
+                    <div key={item.id} className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-2xl p-6 hover:shadow-lg hover:border-purple-300 transition-all">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-sm ${
+                            item.pickup_request.status === 'completed' ? 'bg-gradient-to-br from-green-500 to-emerald-500' :
+                            item.pickup_request.status === 'in_progress' ? 'bg-gradient-to-br from-blue-500 to-indigo-500' :
+                            item.pickup_request.status === 'assigned' ? 'bg-gradient-to-br from-yellow-500 to-orange-500' :
+                            'bg-gradient-to-br from-gray-500 to-gray-600'
+                          }`}>
+                            #{item.id}
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-gray-900">{item.category_name}</h4>
+                            <div className="text-sm text-gray-600">Item ID: {item.id}</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-3xl font-bold text-purple-600">×{item.quantity}</div>
+                          <div className="text-xs text-gray-500">Quantity</div>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-white rounded-xl p-4 space-y-3 border">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-gray-700">Hazard Level:</span>
+                          <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                            item.hazard_level === 'high' ? 'bg-red-100 text-red-700' :
+                            item.hazard_level === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-green-100 text-green-700'
+                          }`}>
+                            {item.hazard_level.toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-gray-700">Pickup Request:</span>
+                          <span className="text-gray-900 font-semibold">#{item.pickup_request.id}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-gray-700">Requested by:</span>
+                          <span className="text-gray-900 font-semibold">{item.pickup_request.resident_name}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-gray-700">Status:</span>
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            item.pickup_request.status === 'completed' ? 'bg-green-100 text-green-700' :
+                            item.pickup_request.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                            item.pickup_request.status === 'assigned' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-gray-100 text-gray-700'
+                          }`}>
+                            {item.pickup_request.status.replace('_', ' ').toUpperCase()}
+                          </span>
+                        </div>
+                        {item.pickup_request.assigned_collector_name && (
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-gray-700">Collected by:</span>
+                            <span className="text-gray-900 font-semibold">{item.pickup_request.assigned_collector_name}</span>
+                          </div>
+                        )}
+                        <div className="pt-3 border-t border-gray-200">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-500">Collection Date:</span>
+                            <span className="text-gray-700 font-medium">
+                              {new Date(item.pickup_request.created_at).toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'short', 
+                                day: 'numeric' 
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

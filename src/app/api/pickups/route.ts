@@ -10,17 +10,21 @@ type ReqEntity = {
   status: string;
   assignedCollectorId: number | null;
   items: { id: number; categoryId: number; quantity: number }[];
+  resident: { name: string };
+  assignedCollector: { name: string } | null;
 };
 
 function serialize(req: ReqEntity) {
   return {
     id: req.id,
     resident_id: req.residentId,
+    resident_name: req.resident.name,
     address: req.address,
     preferred_time: req.preferredTime,
     urgency: req.urgency,
     status: req.status,
     assigned_collector_id: req.assignedCollectorId,
+    assigned_collector_name: req.assignedCollector?.name || null,
     items: req.items.map((it) => ({ id: it.id, category_id: it.categoryId, quantity: it.quantity })),
   };
 }
@@ -39,7 +43,11 @@ export async function GET(req: NextRequest) {
     orderBy: { createdAt: "desc" },
     skip: offset,
     take: 20,
-    include: { items: { select: { id: true, categoryId: true, quantity: true } } }
+    include: { 
+      items: { select: { id: true, categoryId: true, quantity: true } },
+      resident: { select: { name: true } },
+      assignedCollector: { select: { name: true } }
+    }
   });
   const payload = reqs.map(r => serialize(r as unknown as ReqEntity));
   return new Response(JSON.stringify(payload), {
