@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     take: 50,
     include: {
       category: { select: { name: true, hazardLevel: true } },
-      pickupRequest: {
+      pickup: {
         select: {
           id: true,
           address: true,
@@ -29,13 +29,13 @@ export async function GET(req: NextRequest) {
 
   const serializedItems = items.map(item => {
     // Get resident name with fallbacks
-    const residentName = item.pickupRequest.resident?.name || 
-                        (item.pickupRequest.resident?.email ? item.pickupRequest.resident.email.split('@')[0] : null) ||
-                        `User ${item.pickupRequest.residentId}`;
+    const residentName = item.pickup.resident?.name || 
+                        (item.pickup.resident?.email ? item.pickup.resident.email.split('@')[0] : null) ||
+                        `User ${item.pickup.residentId}`;
     
     // Get collector name with fallbacks
-    const collectorName = item.pickupRequest.collector?.name || 
-                         (item.pickupRequest.collector?.email ? item.pickupRequest.collector.email.split('@')[0] : null) ||
+    const collectorName = item.pickup.collector?.name || 
+                         (item.pickup.collector?.email ? item.pickup.collector.email.split('@')[0] : null) ||
                          null;
 
     return {
@@ -45,10 +45,10 @@ export async function GET(req: NextRequest) {
       hazard_level: item.category.hazardLevel,
       quantity: item.quantity,
       pickup_request: {
-        id: item.pickupRequest.id,
-        address: item.pickupRequest.address,
-        status: item.pickupRequest.status,
-        created_at: item.pickupRequest.createdAt,
+        id: item.pickup.id,
+        address: item.pickup.address,
+        status: item.pickup.status,
+        created_at: item.pickup.createdAt,
         resident_name: residentName,
         assigned_collector_name: collectorName
       }

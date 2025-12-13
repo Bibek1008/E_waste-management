@@ -12,7 +12,7 @@ export default function Home() {
     id: number; 
     category_id: number; 
     category_name: string;
-    hazard_level: string;
+    hazard_level: number;
     quantity: number; 
     pickup_request: { 
       id: number; 
@@ -48,6 +48,13 @@ export default function Home() {
   // User-friendly item selection
   const [selectedItems, setSelectedItems] = useState<{[key: string]: number}>({});
   const [customItemDescription, setCustomItemDescription] = useState("");
+
+  // Helper: resolve resident/collector names from users list when API fallback misses
+  const getUserNameById = useCallback((userId?: number | null) => {
+    if (!userId) return null;
+    const u = users.find((x) => x.id === userId);
+    return u?.name || null;
+  }, [users]);
   const [otherItems, setOtherItems] = useState(""); // For custom items not in categories
   
   // E-waste categories for easy selection - use database categories
@@ -120,6 +127,12 @@ export default function Home() {
   
   // Helper to get category name from ID
   const getCategoryName = (categoryId: number) => {
+    const category = ewasteCategories.find(c => c.id === categoryId);
+    return category ? `${category.icon} ${category.name}` : `Item #${categoryId}`;
+  };
+
+  // Helper used in admin items modal UI
+  const getCategoryDisplay = (categoryId: number) => {
     const category = ewasteCategories.find(c => c.id === categoryId);
     return category ? `${category.icon} ${category.name}` : `Item #${categoryId}`;
   };
@@ -686,7 +699,9 @@ export default function Home() {
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                   </svg>
-                                  {p.resident_name || `Resident #${p.resident_id}`}
+                                  {(p.resident_name && p.resident_name.trim() !== "") 
+                                    ? p.resident_name 
+                                    : (getUserNameById(p.resident_id) || `Resident #${p.resident_id}`)}
                                 </span>
                                 <span className="flex items-center gap-1">
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1129,7 +1144,9 @@ export default function Home() {
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                   </svg>
-                                  {p.resident_name && p.resident_name.trim() !== '' ? p.resident_name : `Resident #${p.resident_id}`}
+                                  {(p.resident_name && p.resident_name.trim() !== '') 
+                                    ? p.resident_name 
+                                    : (getUserNameById(p.resident_id) || `Resident #${p.resident_id}`)}
                                 </span>
                                 {p.assigned_collector_id && (
                                   <span className="flex items-center gap-1">
@@ -1511,13 +1528,20 @@ export default function Home() {
                       <div className="bg-white rounded-xl p-4 space-y-3 border">
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-gray-700">Hazard Level:</span>
-                          <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                            item.hazard_level === 'high' ? 'bg-red-100 text-red-700' :
-                            item.hazard_level === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-green-100 text-green-700'
-                          }`}>
-                            {item.hazard_level.toUpperCase()}
-                          </span>
+                          {(() => {
+                            const levelNum = item.hazard_level;
+                            const label = levelNum >= 3 ? 'HIGH' : levelNum === 2 ? 'MEDIUM' : 'LOW';
+                            const cls = levelNum >= 3
+                              ? 'bg-red-100 text-red-700'
+                              : levelNum === 2
+                              ? 'bg-yellow-100 text-yellow-700'
+                              : 'bg-green-100 text-green-700';
+                            return (
+                              <span className={`px-2 py-1 rounded-full text-xs font-bold ${cls}`}>
+                                {label}
+                              </span>
+                            );
+                          })()}
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-gray-700">Pickup Request:</span>
