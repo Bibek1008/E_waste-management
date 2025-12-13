@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
           status: true,
           createdAt: true,
           resident: { select: { name: true } },
-          assignedCollector: { select: { name: true } }
+          collector: { select: { name: true } }
         }
       }
     }
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
       status: item.pickupRequest.status,
       created_at: item.pickupRequest.createdAt,
       resident_name: item.pickupRequest.resident.name,
-      assigned_collector_name: item.pickupRequest.assignedCollector?.name || null
+      assigned_collector_name: item.pickupRequest.collector?.name || null
     }
   }));
 
