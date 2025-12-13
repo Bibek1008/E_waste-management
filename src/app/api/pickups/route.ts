@@ -10,21 +10,31 @@ type ReqEntity = {
   status: string;
   assignedCollectorId: number | null;
   items: { id: number; categoryId: number; quantity: number }[];
-  resident: { name: string };
-  collector: { name: string } | null;
+  resident: { id: number; name: string; email: string };
+  collector: { id: number; name: string; email: string } | null;
 };
 
 function serialize(req: ReqEntity) {
+  // Get the resident name, with fallbacks
+  const residentName = req.resident?.name || 
+                      (req.resident?.email ? req.resident.email.split('@')[0] : null) ||
+                      `User ${req.residentId}`;
+  
+  // Get the collector name, with fallbacks
+  const collectorName = req.collector?.name || 
+                       (req.collector?.email ? req.collector.email.split('@')[0] : null) ||
+                       null;
+
   return {
     id: req.id,
     resident_id: req.residentId,
-    resident_name: req.resident.name,
+    resident_name: residentName,
     address: req.address,
     preferred_time: req.preferredTime,
     urgency: req.urgency,
     status: req.status,
     assigned_collector_id: req.assignedCollectorId,
-    assigned_collector_name: req.collector?.name || null,
+    assigned_collector_name: collectorName,
     items: req.items.map((it) => ({ id: it.id, category_id: it.categoryId, quantity: it.quantity })),
   };
 }
@@ -45,11 +55,19 @@ export async function GET(req: NextRequest) {
     take: 20,
     include: { 
       items: { select: { id: true, categoryId: true, quantity: true } },
-      resident: { select: { name: true } },
-      collector: { select: { name: true } }
+      resident: { select: { id: true, name: true, email: true } },
+      collector: { select: { id: true, name: true, email: true } }
     }
   });
+  
+  // Debug logging
+  console.log('Raw pickup requests:', JSON.stringify(reqs, null, 2));
+  
   const payload = reqs.map(r => serialize(r as unknown as ReqEntity));
+  
+  // Debug serialized payload
+  console.log('Serialized payload:', JSON.stringify(payload, null, 2));
+  
   return new Response(JSON.stringify(payload), {
     headers: { "Content-Type": "application/json", "Cache-Control": "private, max-age=10" },
     status: 200,

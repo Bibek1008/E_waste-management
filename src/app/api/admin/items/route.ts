@@ -18,28 +18,42 @@ export async function GET(req: NextRequest) {
           address: true,
           status: true,
           createdAt: true,
-          resident: { select: { name: true } },
-          collector: { select: { name: true } }
+          residentId: true,
+          assignedCollectorId: true,
+          resident: { select: { id: true, name: true, email: true } },
+          collector: { select: { id: true, name: true, email: true } }
         }
       }
     }
   });
 
-  const serializedItems = items.map(item => ({
-    id: item.id,
-    category_id: item.categoryId,
-    category_name: item.category.name,
-    hazard_level: item.category.hazardLevel,
-    quantity: item.quantity,
-    pickup_request: {
-      id: item.pickupRequest.id,
-      address: item.pickupRequest.address,
-      status: item.pickupRequest.status,
-      created_at: item.pickupRequest.createdAt,
-      resident_name: item.pickupRequest.resident.name,
-      assigned_collector_name: item.pickupRequest.collector?.name || null
-    }
-  }));
+  const serializedItems = items.map(item => {
+    // Get resident name with fallbacks
+    const residentName = item.pickupRequest.resident?.name || 
+                        (item.pickupRequest.resident?.email ? item.pickupRequest.resident.email.split('@')[0] : null) ||
+                        `User ${item.pickupRequest.residentId}`;
+    
+    // Get collector name with fallbacks
+    const collectorName = item.pickupRequest.collector?.name || 
+                         (item.pickupRequest.collector?.email ? item.pickupRequest.collector.email.split('@')[0] : null) ||
+                         null;
+
+    return {
+      id: item.id,
+      category_id: item.categoryId,
+      category_name: item.category.name,
+      hazard_level: item.category.hazardLevel,
+      quantity: item.quantity,
+      pickup_request: {
+        id: item.pickupRequest.id,
+        address: item.pickupRequest.address,
+        status: item.pickupRequest.status,
+        created_at: item.pickupRequest.createdAt,
+        resident_name: residentName,
+        assigned_collector_name: collectorName
+      }
+    };
+  });
 
   return new Response(JSON.stringify(serializedItems), {
     headers: { "Content-Type": "application/json", "Cache-Control": "private, max-age=15" },
