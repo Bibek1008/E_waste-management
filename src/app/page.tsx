@@ -125,7 +125,18 @@ export default function Home() {
   };
 
   async function fetchJSON<T>(path: string, opts?: RequestInit): Promise<T> {
-    const res = await fetch(path, { ...(opts || {}), headers: { "Content-Type": "application/json" } });
+    // Add cache-busting timestamp for GET requests
+    const url = (opts?.method && opts.method !== 'GET') ? path : 
+               `${path}${path.includes('?') ? '&' : '?'}_t=${Date.now()}`;
+    
+    const res = await fetch(url, { 
+      ...(opts || {}), 
+      headers: { 
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
+        ...((opts?.headers as Record<string, string>) || {})
+      } 
+    });
     if (!res.ok) throw new Error(await res.text());
     return res.json() as Promise<T>;
   }

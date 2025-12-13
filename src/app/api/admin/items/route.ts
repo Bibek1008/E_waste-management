@@ -56,7 +56,12 @@ export async function GET(req: NextRequest) {
   });
 
   return new Response(JSON.stringify(serializedItems), {
-    headers: { "Content-Type": "application/json", "Cache-Control": "private, max-age=15" },
+    headers: { 
+      "Content-Type": "application/json", 
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      "Pragma": "no-cache",
+      "Expires": "0"
+    },
     status: 200,
   });
 }

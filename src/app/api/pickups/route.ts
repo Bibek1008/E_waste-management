@@ -60,16 +60,15 @@ export async function GET(req: NextRequest) {
     }
   });
   
-  // Debug logging
-  console.log('Raw pickup requests:', JSON.stringify(reqs, null, 2));
-  
   const payload = reqs.map(r => serialize(r as unknown as ReqEntity));
   
-  // Debug serialized payload
-  console.log('Serialized payload:', JSON.stringify(payload, null, 2));
-  
   return new Response(JSON.stringify(payload), {
-    headers: { "Content-Type": "application/json", "Cache-Control": "private, max-age=10" },
+    headers: { 
+      "Content-Type": "application/json", 
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      "Pragma": "no-cache",
+      "Expires": "0"
+    },
     status: 200,
   });
 }
