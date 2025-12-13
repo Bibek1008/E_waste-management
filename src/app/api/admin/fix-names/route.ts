@@ -6,11 +6,7 @@ export async function POST(req: NextRequest) {
     // Find users with null or empty names
     const usersWithoutNames = await prisma.user.findMany({
       where: {
-        OR: [
-          { name: null },
-          { name: '' },
-          { name: { equals: '' } }
-        ]
+        name: { equals: '' }
       }
     });
     
@@ -40,7 +36,7 @@ export async function POST(req: NextRequest) {
     console.error('Error fixing user names:', error);
     return Response.json({ 
       error: 'Failed to fix user names',
-      details: error.message
+      details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
   }
 }
