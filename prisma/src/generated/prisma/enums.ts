@@ -9,6 +9,7 @@
 * 🟢 You can import this file directly.
 */
 
+
 export const UserRole = {
   resident: 'resident',
   collector: 'collector',
