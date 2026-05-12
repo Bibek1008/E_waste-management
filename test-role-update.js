@@ -1,4 +1,4 @@
-// Simple test to update user role
+// Simple test to update user role - utility script for testing
 async function updateUserRole() {
   try {
     const response = await fetch('http://localhost:3000/api/users/2/update-role', {

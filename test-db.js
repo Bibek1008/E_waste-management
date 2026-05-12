@@ -1,5 +1,6 @@
 import { prisma } from './src/lib/prisma.js';
 
+// Database testing utility script
 async function checkData() {
   console.log('=== Users in database ===');
   const users = await prisma.user.findMany({

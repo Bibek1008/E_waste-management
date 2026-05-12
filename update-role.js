@@ -1,5 +1,6 @@
 const { PrismaClient } = require('./src/generated/prisma');
 
+// Database utility script to update user roles
 const prisma = new PrismaClient();
 
 async function updateUserRole() {

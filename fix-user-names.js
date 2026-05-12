@@ -1,5 +1,6 @@
 const { PrismaClient } = require('./src/generated/prisma/client.js');
 
+// Utility script to fix user names in database
 const prisma = new PrismaClient();
 
 async function fixUserNames() {
