@@ -31,6 +31,7 @@ model User {
   @@index([role])
 }
 
+
 model Session {
   id        Int      @id @default(autoincrement())
   userId    Int
