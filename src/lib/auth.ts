@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 
+// JWT secret key for token signing and verification
 const secret = new TextEncoder().encode(process.env.JWT_SECRET || "dev");
 
 export type AuthPayload = {

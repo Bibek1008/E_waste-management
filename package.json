@@ -1,6 +1,7 @@
 {
-  "name": "web",
+  "name": "e-waste-management",
   "version": "0.1.0",
+  "description": "A comprehensive Next.js web application for managing electronic waste collection and disposal",
   "private": true,
   "scripts": {
     "dev": "next dev",

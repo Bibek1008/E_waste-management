@@ -1,3 +1,6 @@
+// E-Waste Management System Database Schema
+// Defines the structure for users, pickups, items, and categories
+
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
