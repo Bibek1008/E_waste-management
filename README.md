@@ -216,7 +216,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Next.js team for the amazing framework
 - Prisma for the excellent ORM
 - TailwindCSS for beautiful styling
-- Vercel for seamless deployment
+- Vercel for seamless deployment and live
 
 ## 📞 Support
 
