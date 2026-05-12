@@ -13,6 +13,7 @@
  * 🟢 You can import this file directly.
  */
 
+
 import * as Prisma from './internal/prismaNamespaceBrowser'
 export { Prisma }
 export * as $Enums from './enums'
