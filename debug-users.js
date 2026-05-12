@@ -15,6 +15,7 @@ async function checkUsers() {
       }
     });
 
+    
     console.log("Users in database:", users);
     console.log("Total users:", users.length);
 
